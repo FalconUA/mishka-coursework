@@ -3,37 +3,37 @@
 #ifndef __PERMUTATIONS_H__
 #define __PERMUTATIONS_H__
 
-// if not defined in compilation parameters 
-#ifndef __CRITICAL_SET_SIZE__ 
-	// Check windows
-	#if _WIN32 || _WIN64
-	#if _WIN64
-		#define __CRITICAL_SET_SIZE__ 64
-	#else
-		#define __CRITICAL_SET_SIZE__ 32
-	#endif
-	#endif
-
-	// Check GCC
-	#if __GNUC__
-	#if __x86_64__ || __ppc64__
-		#define __CRITICAL_SET_SIZE__ 64
-	#else
-		#define __CRITICAL_SET_SIZE__ 32
-	#endif
-	#endif
-#endif
-
 #include <vector>
 #include <ostream>
 #include <assert.h>
 #include <stdexcept>
 #include <iostream>
 #include <algorithm>
+#include <type_traits>
+#include <utility>
 #include "additional.h"
 
+#define REGISTER_PARSE_TYPE(X) template <> struct TypeParseTraits<X> \
+	    { static const char* name; } ; const char* TypeParseTraits<X>::name = #X
+
+namespace __check_operator_existance {
+	struct no_eq {};
+	struct no_lt {};
+	template <typename T, typename Arg> no_lt operator< (const T&, const Arg&);
+	template <typename T, typename Arg> no_eq operator== (const T&, const Arg&); 
+
+	template <typename T, typename Arg = T>
+	struct __smaller_exists { 
+		enum { value = !std::is_same<decltype(*(T*)(0) < *(Arg*)(0)), no_lt>::value };
+	};
+	template <typename T, typename Arg = T>
+	struct __equal_exists {
+		enum { value = !std::is_same<decltype(*(T*)(0) == *(Arg*)(0)), no_eq>::value };
+	};
+};
 
 namespace finite {
+
 	template <class number> class set;
 	template <class number> void print_powerset(std::ostream& out, set<number>& s);	
 	template <class number> void print_k_sized(std::ostream& out, set<number>& s, size_t limit);
@@ -51,6 +51,14 @@ namespace finite {
 
 	template <class number>
 	class set {
+
+	/* check if class "number" is a ordinal type */
+	static_assert(__check_operator_existance::__equal_exists<number>::value, 
+		"Class 'set' requires its template type to have an implementation of 'operator==' method.");
+	static_assert(__check_operator_existance::__smaller_exists<number>::value, 
+		"Class 'set' requires its template type to have an implementation of 'operator<' method.");
+
+	/* class interface */
 	private: 
 		std::vector<number> container;
 	public:
@@ -74,9 +82,8 @@ namespace finite {
 		friend void printexclude_permutations<number>(std::ostream& out, set<number>& s, 
 			const std::vector<set<number>&>& excluding);
 
-	};
-
-};
+	}; // end of set class declaration
+}; // end of namespace "finite"
 
 template <class number>
 finite::set<number>::set() {}
