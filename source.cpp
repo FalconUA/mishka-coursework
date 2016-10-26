@@ -6,6 +6,9 @@
 class A{};
 
 int main(){
+//  Try to uncomment this line and compile to see some metaprogramming magic :D 	
+//	finite::set<A> ss;
+
 	std::vector<int> v = {1, 2, 2, 4};
 	finite::set<int> s(v);
 
