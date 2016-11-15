@@ -8,17 +8,17 @@ class A{};
 #ifdef DEBUG
 int main(){
 //  Try to uncomment this line and compile to see some metaprogramming magic :D 	
-	finite::set<A> ss;
+	dm::set<A> ss;
 
 	std::vector<int> v = {1, 2, 2, 4};
-	finite::set<int> s(v);
+	dm::set<int> s(v);
 
 	std::cout << "a = ";
-	finite::print_powerset(std::cout, s);
+	dm::print_powerset(std::cout, s);
 	std::cout << std::endl << "b = ";
-	finite::print_k_sized(std::cout, s, 3);
+	dm::print_k_sized(std::cout, s, 3);
 	std::cout << std::endl << "c = ";
-	finite::print_permutations(std::cout, s);
+	dm::print_permutations(std::cout, s);
 	std::cout << std::endl;
 
 	return 0;
@@ -36,21 +36,21 @@ int main(){
 		std::cin >> v[i];	
 	std::cout << std::endl;
 
-	finite::set<int> s(v);
+	dm::set<int> s(v);
 	std::cout << std::endl << "1 - Powerset: ";
-	finite::print_powerset(std::cout, s);
+	dm::print_powerset(std::cout, s);
 	std::cout << std::endl << "2 - k-sized sets.";
     std::cout << "Please enter the number k: ";
 	int k;
 	std::cin >> k;
-	finite::print_k_sized(std::cout, s, k);
+	dm::print_k_sized(std::cout, s, k);
 	std::cout << std::endl << "3 - All permutations:" << std::endl;
-	finite::print_permutations(std::cout, s);
+	dm::print_permutations(std::cout, s);
 	std::cout << std::endl << "4 - Do the same operations (1-3), excluding the elements in the collection of sets Si, i in 0..m";
 	std::cout << std::endl << "Please enter the quantity of excluding sets: ";
 	int m;
 	std::cin >> m;
-	std::vector<finite::set<int>> e;
+	std::vector<dm::set<int>> e;
 
 	for (int i=0; i<m; i++){
 		std::vector<int> vi;
@@ -61,15 +61,15 @@ int main(){
 		std::cout << "Enter the elements of S" << i+1 << ", separated by space: ";
 		for (int j=0; j < h; j++)
 			std::cin >> vi[j]; 
-		finite::set<int> si(vi);
+		dm::set<int> si(vi);
 		e.push_back(si);
 	}
 	std::cout << std::endl << "1' - Powerset without the unity of Si: ";
-	finite::printexclude_powerset(std::cout, s, e);	
+	dm::printexclude_powerset(std::cout, s, e);	
 	std::cout << std::endl << "2' - k-sized sets without the unity of Si: ";
-	finite::printexclude_k_sized(std::cout, s, k, e);
+	dm::printexclude_k_sized(std::cout, s, k, e);
 	std::cout << std::endl << "3' - All permutations without the unity of Si: ";
-	finite::printexclude_permutations(std::cout, s, e);
+	dm::printexclude_permutations(std::cout, s, e);
 	std::cout << std::endl;
 }
 #endif
