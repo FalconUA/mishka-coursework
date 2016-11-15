@@ -132,9 +132,10 @@ template <class number>
 void dm::print_powerset(std::ostream& out, dm::set<number>& s) {
 	std::sort(s.container.begin(), s.container.end());
 	std::vector<number> v;
+	std::vector<bool> bitmask(s.container.size(), false);
 
 	out << "[[], ";
-	powerset_generator(out, s.container, v, 0);
+	powerset_generator(out, s.container, v, bitmask, 0);
 	out << "]";
 }
 
@@ -142,12 +143,13 @@ template <class number>
 void dm::print_k_sized(std::ostream& out, dm::set<number>& s, size_t limit){
 	std::sort(s.container.begin(), s.container.end());
 	std::vector<number> v;
+	std::vector<bool> bitmask(s.container.size(), false);
 
 	out << "[";
 	if (limit == 0 || limit > s.container.size())
 		out << "[]";
 	else
-		k_sized_generator(out, s.container, v, 0, limit);
+		k_sized_generator(out, s.container, v, bitmask, 0, limit);
 	out << "]";
 }
 
