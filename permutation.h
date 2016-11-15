@@ -41,13 +41,13 @@ namespace finite {
 
 	template <class number> 
 	void printexclude_powerset(std::ostream& out, set<number>& s, 
-			const std::vector<set<number>&>& excluding);
+			const std::vector<set<number>>& excluding);
 	template <class number>
 	void printexclude_k_sized(std::ostream& out, set<number>& s, size_t limit, 
-			const std::vector<set<number>&>& excluding);
+			const std::vector<set<number>>& excluding);
 	template <class number>
 	void printexclude_permutations(std::ostream& out, set<number>& s, 
-			const std::vector<set<number>&>& excluding);
+			const std::vector<set<number>>& excluding);
 
 	template <class number>
 	class set {
@@ -67,20 +67,20 @@ namespace finite {
 		set(const std::vector<number>& elements);
 
 		void add_element(const number& element);
-		bool contains(set& s);
-		bool contains(number element);
-		void exclude(set& s);
+		bool contains(const set& s) const;
+		bool contains(number element) const;
+		void exclude(const set& s);
 
 		friend void print_powerset<number>(std::ostream& out, set& s);
 		friend void print_k_sized<number>(std::ostream& out, set& s, size_t limit);
 		friend void print_permutations<number>(std::ostream& out, set& s);
 
 		friend void printexclude_powerset<number>(std::ostream& out, set& s, 
-			const std::vector<set<number>&>& excluding);
-		friend void printexclude_k_sized<number>(std::ostream& out, set<number>& s, size_t limit, 
-			const std::vector<set<number>&>& excluding);
-		friend void printexclude_permutations<number>(std::ostream& out, set<number>& s, 
-			const std::vector<set<number>&>& excluding);
+			const std::vector<set>& excluding);
+		friend void printexclude_k_sized<number>(std::ostream& out, set& s, size_t limit, 
+			const std::vector<set>& excluding);
+		friend void printexclude_permutations<number>(std::ostream& out, set& s, 
+			const std::vector<set>& excluding);
 
 	}; // end of set class declaration
 }; // end of namespace "finite"
@@ -95,12 +95,13 @@ template <class number>
 finite::set<number>::set(const finite::set<number>& s): container(s.container) {}
 
 template <class number>
-bool finite::set<number>::contains(number element){
-	return (std::find(this->container.begin(), this->container.end(), element));
+bool finite::set<number>::contains(number element) const {
+	return (std::find(this->container.begin(), this->container.end(), element) != 
+			this->container.end());
 }
 
 template <class number>
-bool finite::set<number>::contains(set<number>& s){
+bool finite::set<number>::contains(const set<number>& s) const {
 	bool answer = true;
 	for (typename std::vector<number>::iterator it = s.container.begin(); 
 			it != s.container.end(); it++)
@@ -109,7 +110,7 @@ bool finite::set<number>::contains(set<number>& s){
 }
 
 template <class number>
-void finite::set<number>::exclude(set<number>& s){
+void finite::set<number>::exclude(const set<number>& s){
 	std::vector<number> v;
 	for (typename std::vector<number>::iterator it = this->container.begin(); 
 			it != this->container.end(); it++)
@@ -166,32 +167,32 @@ void finite::print_permutations(std::ostream& out, finite::set<number>& s){
 
 template <class number> 
 void finite::printexclude_powerset(std::ostream& out, finite::set<number>& s, 
-		std::vector<finite::set<number>&>& excluding)
+		const std::vector<finite::set<number>>& excluding)
 {
 	finite::set<number> a(s);
-	for (typename std::vector<finite::set<number>&>::iterator it = excluding.begin();
+	for (typename std::vector<finite::set<number>>::const_iterator it = excluding.begin();
 			it != excluding.end(); it++)
-		a.exclude(*it);
+		a.exclude(*it);	
 	finite::print_powerset(out, a);
 }
 
 template <class number>
-void printexclude_k_sized(std::ostream& out, finite::set<number>& s, size_t limit, 
-		std::vector<finite::set<number>&>& excluding)
+void finite::printexclude_k_sized(std::ostream& out, finite::set<number>& s, size_t limit, 
+		const std::vector<finite::set<number>>& excluding)
 {
 	finite::set<number> a(s);
-	for (typename std::vector<finite::set<number>&>::iterator it = excluding.begin();
+	for (typename std::vector<finite::set<number>>::const_iterator it = excluding.begin();
 			it != excluding.end(); it++)
 		a.exclude(*it);
 	finite::print_k_sized(out, a, limit);
 }
 
 template <class number>
-void printexclude_permutations(std::ostream& out, finite::set<number>& s, 
-		std::vector<finite::set<number>&>& excluding)
+void finite::printexclude_permutations(std::ostream& out, finite::set<number>& s, 
+		const std::vector<finite::set<number>>& excluding)
 {
 	finite::set<number> a(s);
-	for (typename std::vector<finite::set<number>&>::iterator it = excluding.begin();
+	for (typename std::vector<finite::set<number>>::const_iterator it = excluding.begin();
 			it != excluding.end(); it++)
 		a.exclude(*it);
 	finite::print_permutations(out, a);
