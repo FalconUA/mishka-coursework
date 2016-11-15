@@ -1,8 +1,8 @@
 all:
-	g++ -O2 source.cpp -o perm
+	g++ -std=c++11 -O2 source.cpp -o perm
 
 debug:
-	g++ source.cpp -DDEBUG -o perm_debug
+	g++ -std=c++11 source.cpp -DDEBUG -o perm_debug
 
 clean:
-	rm perm
+	rm perm perm_debug &> /dev/null
